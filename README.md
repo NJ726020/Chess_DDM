@@ -91,6 +91,11 @@ ChessDDM/
 
 ---
 
+## Author: 
+Niklas Jung
+
+Claude Code was used with code preparation. 
+
 ## References
 
 - Sigman M, Etchemendy P, Slezak DF and Cecchi GA (2010) Response Time Distributions in Rapid Chess: A Large-Scale Decision Making Experiment. *Front. Neurosci.* 4:60. doi: [10.3389/fnins.2010.00060](https://doi.org/10.3389/fnins.2010.00060)
