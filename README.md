@@ -97,4 +97,4 @@ ChessDDM/
 
 - de Lafuente V (2011) Flexible Decisions and Chess Expertise. *Front. Neurosci.* 5:4. doi: [10.3389/fnins.2011.00004](https://doi.org/10.3389/fnins.2011.00004)
 
-- Simon HA (1973) The structure of ill structured problems. *Artificial Intelligence* 4(3–4):181–201.
+- Simon H & Chase W. (1973) Skill in Chess: Experiments with chess-playing tasks and computer simulation of skilled performance throw light on some human perceptual and memory processes. *American Scientist*
