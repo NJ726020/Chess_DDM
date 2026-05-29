@@ -6,13 +6,24 @@
 library(arrow)
 library(tidyverse)
 library(dplyr)
+library(tidyverse)
+library(broom)
 
 # Read directly from mounted Drive path
 df <- read_parquet("pilot_chess.parquet")
 
+# ── Correct move_time for increment ──────────────────────────────────────────
+# Lichess %clk tags record the clock *after* the increment is applied, so the
+# Python calculation (prev_clock - current_clock) equals (time_spent - increment).
+# We add the increment back to recover the true thinking time.
+# time_control is formatted as "base+increment" (e.g. "60+5", "600+0").
+df <- df %>%
+  mutate(
+    increment = as.numeric(str_extract(time_control, "(?<=\\+)\\d+")),
+    move_time = if_else(!is.na(move_time), move_time + increment, NA_real_)
+  )
 
-
-df <- df %>% 
+df <- df %>%
   group_by(game_id) %>% 
   mutate(eval_cp_change = abs(eval_cp - lag(eval_cp))) %>% 
   ungroup()
@@ -51,8 +62,20 @@ df <- df |>
   ) |>
   ungroup()
 
-blunders_df <- df %>% 
+blunders_df <- df %>%
   filter(eval_cp_change >= 200)
 
 cat(sprintf("Found %d blunders.\n", nrow(blunders_df)))
 head(blunders_df)
+
+# ── Impute eval_cp for forced-mate positions ──────────────────────────────────
+# Python stored mate scores as NA. Fill the last known eval forward (and the
+# first known eval backward for early NAs) within each game — a forced-mate
+# evaluation persists until the game ends, so this is semantically correct.
+df <- df |>
+  group_by(game_id) |>
+  arrange(move_num, .by_group = TRUE) |>
+  fill(eval_cp, .direction = "downup") |>
+  ungroup()
+
+
